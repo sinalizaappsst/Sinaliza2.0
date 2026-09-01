@@ -1,0 +1,9 @@
+{
+  "name": "sinaliza-web-operacional",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p dist && cp index.html config.js manifest.json sw.js dist/",
+    "deploy": "wrangler deploy"
+  }
+}

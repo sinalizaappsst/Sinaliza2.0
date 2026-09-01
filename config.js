@@ -1,4 +1,2 @@
-window.SINALIZA_CONFIG = {
-  url: 'https://qfyaghfoicmbkwztbv.supabase.co',
-  anonKey: 'sb_publishable_EGMkAGM5LwOobagOTY7ACQ_vG7TWHMu'
-};
+// Gerado pela Cloudflare no build. Para teste local, preencha manualmente.
+window.SINALIZA_CONFIG = { url: '', anonKey: '' };

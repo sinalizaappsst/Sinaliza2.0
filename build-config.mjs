@@ -10,7 +10,7 @@ if (!url || !url.startsWith('https://') || !url.includes('.supabase.co')) {
   process.exit(1);
 }
 
-if (!anonKey || anonKey.length < 25) {
+if (!anonKey || anonKey.length < 25 || anonKey.toLowerCase().includes('service_role')) {
   console.error('\nERRO: variável VITE_SUPABASE_PUBLISHABLE_KEY ausente ou inválida.');
   console.error('Use a anon public key / publishable key do Supabase. Não use service_role.\n');
   process.exit(1);

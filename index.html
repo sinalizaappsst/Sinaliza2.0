@@ -313,7 +313,6 @@
       <aside class="sidebar">
         <nav id="desktopNav"></nav>
         <div class="sidebar-bottom">
-          <button class="nav-btn" onclick="resetDemo()">↻ Restaurar demonstração</button>
           <button class="nav-btn" onclick="logout()">⇥ Sair</button>
         </div>
       </aside>
@@ -366,7 +365,15 @@ function ensureDataUserFromProfile(profile){
   if(user){user.id=id;user.name=name;user.role=role;user.email=profile.email;user.active=profile.active!==false;}
   else data.users.unshift({id,name,role,email:profile.email,active:profile.active!==false});
 }
-function remoteSeedData(){return prepararDadosOperacionais(clone(seed))}
+function remoteSeedData(){
+  const base=prepararDadosOperacionais(clone(seed));
+  // Versão operacional: mantém cadastros estruturais, mapa, OAEs, clientes e checklists,
+  // mas inicia sem usuários fictícios e sem operações de demonstração.
+  base.users=[];
+  base.operations=[];
+  base.assistantQueries=[];
+  return base;
+}
 async function fetchProfile(){
   const client=supabaseClient();
   const {data:{user},error:userError}=await client.auth.getUser();
@@ -456,9 +463,9 @@ function prepararDadosOperacionais(raw){
   try{ if(typeof enhanceV31Data==='function') enhanceV31Data(); }catch(error){ console.error('Falha ao preparar dados de mapa',error); }
   data.assistantQueries=data.assistantQueries||[];
   data.clients=data.clients&&data.clients.length?data.clients:clone(seed.clients);
-  data.users=data.users&&data.users.length?data.users:clone(seed.users);
+  data.users=Array.isArray(data.users)?data.users:[];
   data.oaeProjects=data.oaeProjects&&data.oaeProjects.length?data.oaeProjects:clone(seed.oaeProjects);
-  data.operations=data.operations&&data.operations.length?data.operations:clone(seed.operations);
+  data.operations=Array.isArray(data.operations)?data.operations:[];
   return data;
 }
 
@@ -646,9 +653,7 @@ function syncSessionWithUsers(){
   session={userId:user.id,role:user.role,name:user.name};sessionStorage.setItem(SESSION_KEY,JSON.stringify(session));return true;
 }
 function logout(){remoteSignOut();sessionStorage.removeItem(SESSION_KEY);session=null;sinalizaRemoteReady=false;document.getElementById('app').classList.add('hidden');document.getElementById('loginScreen').classList.remove('hidden');renderLoginCards()}
-async function resetDemo(){
-  if(confirm('Restaurar todos os dados de demonstração? As evidências multimídia locais também serão apagadas.')){data=migrateData(clone(seed));saveData();try{await clearMedia()}catch{}toast('Dados restaurados.');render()}
-}
+async function resetDemo(){toast('A restauração de demonstração foi removida desta versão operacional.')}
 function init(){
   renderLoginCards();
   if(!session){logout();return}
